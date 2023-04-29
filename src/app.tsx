@@ -125,7 +125,7 @@ export function App() {
 
   return (
     <main>
-      <pre><code>{log}</code></pre>
+      <pre contentEditable><code>{log}</code></pre>
       <aside>
         <form onSubmit={(e) => updateLog(e)}>
           <label for="playlistUrl">
