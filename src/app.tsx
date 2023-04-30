@@ -52,6 +52,7 @@ export function App() {
   const startIndex = useSignal(1);
   const endIndex = useSignal(2);
   const apiHost = useSignal(hosts[0]);
+  const date = useSignal(new Date().toISOString().slice(0, 10))
   const log = useSignal("");
 
   useEffect(() => {
@@ -95,7 +96,6 @@ export function App() {
 
   const updateLog = async (e: Event) => {
     e.preventDefault();
-    const today = new Date().toISOString().slice(0, 10);
     const playlist = await fetchPlaylist(playlistId.value, apiHost.value);
     const playTime = calculatePlaylistDuration(
       playlist,
@@ -109,11 +109,11 @@ export function App() {
       endIndex: endIndex.value,
       playTime: playTime,
     };
-    const todayEntries = db[today];
+    const todayEntries = db[date.value];
     if (todayEntries == undefined) {
-      db[today] = [logEntry];
+      db[date.value] = [logEntry];
     } else {
-      db[today].push(logEntry);
+      db[date.value].push(logEntry);
     }
     localStorage.setItem("log", JSON.stringify(db));
     log.value = JSON.stringify(db.data, null, 2);
@@ -170,6 +170,9 @@ export function App() {
           <datalist id="apiHosts">
             {hosts.map((host) => <option value={host} />)}
           </datalist>
+
+          <label for="date">Date</label>
+          <input type="date" name="date" value={date} onChange={(e) => handleInput(e, date)} />
 
           <div>
             <button type="submit">Submit</button>
