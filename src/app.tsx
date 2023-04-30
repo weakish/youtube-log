@@ -4,8 +4,6 @@ import {
   extractPlaylistId,
   fetchPlaylist,
 } from "./youtube-playtime";
-import { LowSync } from "lowdb";
-import { LocalStorage } from "lowdb/browser";
 import "./app.css";
 import { useEffect } from "preact/hooks";
 
@@ -47,9 +45,8 @@ export function App() {
     "https://invidious.tiekoetter.com",
   ];
 
-  const adapter = new LocalStorage<Log>("log");
-  const db = new LowSync<Log>(adapter, {});
 
+  const db: Log = JSON.parse(localStorage.getItem("log") ?? "{}")
   const playlistUrl = useSignal("");
   const playlistId = useSignal("");
   const startIndex = useSignal(1);
@@ -58,8 +55,7 @@ export function App() {
   const log = useSignal("");
 
   useEffect(() => {
-    db.read();
-    log.value = JSON.stringify(db.data, null, 2);
+    log.value = JSON.stringify(db, null, 2);
   }, []);
   const handlePlaylistUrl = (e: Event, s: Signal) => {
     if (e.target instanceof HTMLInputElement) {
@@ -113,13 +109,13 @@ export function App() {
       endIndex: endIndex.value,
       playTime: playTime,
     };
-    const todayEntries = db.data[today];
+    const todayEntries = db[today];
     if (todayEntries == undefined) {
-      db.data[today] = [logEntry];
+      db[today] = [logEntry];
     } else {
-      db.data[today].push(logEntry);
+      db[today].push(logEntry);
     }
-    db.write();
+    localStorage.setItem("log", JSON.stringify(db));
     log.value = JSON.stringify(db.data, null, 2);
   };
 
