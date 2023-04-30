@@ -34,7 +34,8 @@ export function App() {
   ];
 
 
-  const db: Log = JSON.parse(localStorage.getItem("log") ?? "{}")
+  const db = Object.fromEntries(Object.entries(
+    JSON.parse(localStorage.getItem("log") ?? "{}")).sort())
   const playlistUrl = useSignal("");
   const playlistId = useSignal("");
   const startIndex = useSignal(1);
