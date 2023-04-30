@@ -105,7 +105,7 @@ export function App() {
       db[date.value].push(logEntry);
     }
     localStorage.setItem("log", JSON.stringify(db));
-    log.value = JSON.stringify(db.data, null, 2);
+    log.value = JSON.stringify(db, null, 2);
   };
 
   return (
