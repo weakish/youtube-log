@@ -33,9 +33,19 @@ export function App() {
     "https://invidious.tiekoetter.com",
   ];
 
+  type LogEntry = {
+    playlistId: string;
+    playlistTitle: string;
+    startIndex: number;
+    endIndex: number;
+    playTime: number;
+  }
+  type Log = {
+    [key: string]: LogEntry[];
+  }
 
   const db = Object.fromEntries(Object.entries(
-    JSON.parse(localStorage.getItem("log") ?? "{}")).sort())
+    JSON.parse(localStorage.getItem("log") ?? "{}")).sort()) as Log
   const playlistUrl = useSignal("");
   const playlistId = useSignal("");
   const startIndex = useSignal(1);
@@ -73,9 +83,13 @@ export function App() {
       );
     }
   };
-  const handleInput = (e: Event, s: Signal) => {
+  const handleInput = (e: Event, s: Signal, isNumber: boolean = false) => {
     if (e.target instanceof HTMLInputElement) {
+      if (isNumber) {
+        s.value = parseInt(e.target.value, 10);
+      } else {
       s.value = e.target.value;
+      }
     } else {
       throw new Error(
         "e.target is not HTMLInputElement! Calling handleInput on non input elements?",
@@ -133,7 +147,7 @@ export function App() {
             required
             min="1"
             value={startIndex}
-            onChange={(e) => handleInput(e, startIndex)}
+            onChange={(e) => handleInput(e, startIndex, true)}
           />
           <label for="endIndex">
             End index<sup>3</sup>
@@ -144,7 +158,7 @@ export function App() {
             required
             min="2"
             value={endIndex}
-            onChange={(e) => handleInput(e, endIndex)}
+            onChange={(e) => handleInput(e, endIndex, true)}
           />
 
           <label for="apiHost">
