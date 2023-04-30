@@ -7,18 +7,6 @@ import {
 import "./app.css";
 import { useEffect } from "preact/hooks";
 
-type LogEntry = {
-  playlistId: string;
-  playlistTitle: string;
-  startIndex: number;
-  endIndex: number;
-  playTime: number;
-};
-
-type Log = {
-  [index: string]: LogEntry[];
-};
-
 export function App() {
   const hosts = [
     "https://invidious.snopyta.org",
